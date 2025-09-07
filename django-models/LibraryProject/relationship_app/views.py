@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from django.contrib.auth import login
 
 # User registration view
 def register(request):
@@ -13,7 +12,7 @@ def register(request):
             form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}!')
-            return redirect('login')
+            return redirect('login')  # Redirect to login after successful registration
     else:
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
@@ -34,4 +33,5 @@ def user_login(request):
 # User logout view
 def user_logout(request):
     logout(request)
-    return render(request, 'relationship_app/logout.html')
+    messages.success(request, 'You have been logged out.')  # Optional message after logout
+    return redirect('login')  # Redirect to login page after logout
