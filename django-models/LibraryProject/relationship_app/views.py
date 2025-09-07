@@ -1,16 +1,36 @@
-from django.shortcuts import render
-from django.views import View
-from .models import Book, Library
-from .models import Library
 from django.views.generic.detail import DetailView
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 
-# Function-based view to list all books
-def list_books(request):
-    books = Book.objects.all()  # Retrieve all books from the database
-    return render(request, 'relationship_app/list_books.html', {'books': books})
+# User registration view
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}!')
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'relationship_app/register.html', {'form': form})
 
-# Class-based view to display details for a specific library
-class LibraryDetailView(View):
-    def get(self, request, pk):
-        library = Library.objects.get(pk=pk)  # Retrieve the library by primary key
-        return render(request, 'relationship_app/library_detail.html', {'library': library})
+# User login view
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('list_books')  # Redirect to a desired page after login
+        else:
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'relationship_app/login.html')
+
+# User logout view
+def user_logout(request):
+    logout(request)
+    return render(request, 'relationship_app/logout.html')
