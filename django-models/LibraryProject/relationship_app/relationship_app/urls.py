@@ -1,10 +1,11 @@
+# relationship_app/urls.py
 from django.urls import path
-from .views import list_books, LibraryDetailView, user_login, user_logout, register
+from .views import list_books, LibraryDetailView, RegisterView, LoginView, LogoutView
 
 urlpatterns = [
-    path('books/', list_books, name='list_books'),
-    path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_detail'),
-    path('login/', user_login, name='login'),  # URL for login view
-    path('logout/', user_logout, name='logout'),  # URL for logout view
-    path('register/', register, name='register'),  # URL for registration view
+    path('books/', list_books, name='list_books'),  # Example book listing URL
+    path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_detail'),  # Detail view for library
+    path('register/', RegisterView.as_view(), name='register'),  # Registration URL
+    path('login/', LoginView.as_view(), name='login'),  # Login URL
+    path('logout/', LogoutView.as_view(), name='logout'),  # Logout URL
 ]
