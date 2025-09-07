@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -29,3 +31,11 @@ class Librarian(models.Model):
 
     def __str__(self):
         return self.name
+class UserProfile(models.Model):
+    USER_TYPE_CHOICES = (
+        ('Admin', 'Admin'),
+        ('Member', 'Member'),
+    )
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='Member')
