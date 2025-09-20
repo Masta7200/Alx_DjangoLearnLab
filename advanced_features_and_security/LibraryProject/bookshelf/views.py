@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Book
 from .forms import BookForm  # Assuming you have a form for Book
+from .forms import ExampleForm
 
 def book_list(request):
     # Safe query using Django ORM
