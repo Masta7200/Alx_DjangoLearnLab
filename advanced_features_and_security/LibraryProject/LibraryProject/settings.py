@@ -26,6 +26,12 @@ SECRET_KEY = 'django-insecure-$5(ea6neu)8ip%xbold169a4#x$w!3=8_v@w2!a^u)oxk#y%@5
 DEBUG = True
 
 ALLOWED_HOSTS = []
+SECURE_SSL_REDIRECT = True
+
+# Enable HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Include all subdomains in HSTS policy
+SECURE_HSTS_PRELOAD = True  # Allow preloading of HSTS
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking
 SECURE_CONTENT_TYPE_NOSNIFF = True
