@@ -1,30 +1,22 @@
-from django_filters import rest_framework as filters
+from tracemalloc import BaseFilter
+from warnings import filters
 from rest_framework import generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework import filters as drf_filters
+from rest_framework.filters import SearchFilter
+# from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Book
 from .serializers import BookSerializer
-
-# Define a filter set for the Book model
-class BookFilter(filters.FilterSet):
-    title = filters.CharFilter(lookup_expr='icontains')
-    author = filters.CharFilter(field_name='author__name', lookup_expr='icontains')  # Assuming there's a related Author model
-    publication_year = filters.NumberFilter()
-
-    class Meta:
-        model = Book
-        fields = ['title', 'author', 'publication_year']
-
+# from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from django_filters import rest_framework
 class BookListView(generics.ListCreateAPIView):
     """View to list all books and create a new book."""
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [AllowAny]
-    filter_backends = (filters.DjangoFilterBackend, SearchFilter, OrderingFilter)
-    filterset_class = BookFilter
-    search_fields = ['title', 'author__name']  # Assuming there's a related Author model
-    ordering_fields = ['title', 'publication_year']
-    ordering = ['title']  # Default ordering
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = BaseFilter
 
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     """View to retrieve, update, or delete a book."""
@@ -32,5 +24,22 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]  # Only authenticated users can modify
 
-# Note: The CreateView, UpdateView, and DeleteView are not typically used in a REST API context.
-# They are more suited for traditional Django views. Keep them if you need them for a different purpose.
+class BookCreateView(CreateView):
+    model = Book
+    fields = ['title', 'author', 'publication_year']
+    template_name = 'book_form.html'
+    success_url = '/books/'
+
+class BookUpdateView(UpdateView):
+    model = Book
+    fields = ['title', 'author', 'publication_year']
+    template_name = 'book_form.html'
+    success_url = '/books/'
+
+class BookDeleteView(DeleteView):
+    model = Book
+    template_name = 'book_confirm_delete.html'
+    success_url = '/books/'
+
+# Example usage in a view:
+# filter_backends = (drf_filters.OrderingFilter, SearchFilter)
