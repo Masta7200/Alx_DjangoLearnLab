@@ -1,6 +1,7 @@
 from tracemalloc import BaseFilter
 from warnings import filters
 from rest_framework import generics
+from rest_framework import filters as drf_filters
 # from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Book
@@ -38,3 +39,6 @@ class BookDeleteView(DeleteView):
     model = Book
     template_name = 'book_confirm_delete.html'
     success_url = '/books/'
+
+# Example usage in a view:
+# filter_backends = (filters.OrderingFilter,)
