@@ -1,5 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Book
 from .serializers import BookSerializer
 
@@ -14,3 +15,20 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]  # Only authenticated users can modify
+
+class BookCreateView(CreateView):
+    model = Book
+    fields = ['title', 'author', 'publication_year']
+    template_name = 'book_form.html'
+    success_url = '/books/'
+
+class BookUpdateView(UpdateView):
+    model = Book
+    fields = ['title', 'author', 'publication_year']
+    template_name = 'book_form.html'
+    success_url = '/books/'
+
+class BookDeleteView(DeleteView):
+    model = Book
+    template_name = 'book_confirm_delete.html'
+    success_url = '/books/'
