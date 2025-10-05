@@ -15,8 +15,8 @@ class BookListView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [AllowAny]
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = BaseFilter
+    filter_backends = (drf_filters.SearchFilter, drf_filters.OrderingFilter)
+    search_fields = ['title', 'author']
 
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     """View to retrieve, update, or delete a book."""
@@ -41,5 +41,3 @@ class BookDeleteView(DeleteView):
     template_name = 'book_confirm_delete.html'
     success_url = '/books/'
 
-# Example usage in a view:
-# filter_backends = (drf_filters.OrderingFilter, SearchFilter)
