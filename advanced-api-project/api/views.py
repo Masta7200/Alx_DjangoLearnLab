@@ -3,6 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Book
 from .serializers import BookSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 class BookListView(generics.ListCreateAPIView):
     """View to list all books and create a new book."""
