@@ -34,8 +34,3 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 # Note: The CreateView, UpdateView, and DeleteView are not typically used in a REST API context.
 # They are more suited for traditional Django views. Keep them if you need them for a different purpose.
-class BookCreateView(generics.CreateAPIView):
-    """View to create a new book."""
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]  # Only authenticated users can create
