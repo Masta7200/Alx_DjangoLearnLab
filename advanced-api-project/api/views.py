@@ -1,3 +1,5 @@
+from tracemalloc import BaseFilter
+from warnings import filters
 from rest_framework import generics
 # from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -10,7 +12,9 @@ class BookListView(generics.ListCreateAPIView):
     """View to list all books and create a new book."""
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [AllowAny]  # Allow any user to view the list
+    permission_classes = [AllowAny]
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = BaseFilter
 
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     """View to retrieve, update, or delete a book."""
