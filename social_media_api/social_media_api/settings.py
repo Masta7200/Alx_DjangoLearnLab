@@ -131,3 +131,14 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_SSL_REDIRECT = True  # Redirect all HTTP to HTTPS
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'masta',
+        'USER': 'postgres',
+        'PASSWORD': '12345',
+        'HOST': 'your_db_host',
+        'PORT': '5432',
+    }
+}
+
