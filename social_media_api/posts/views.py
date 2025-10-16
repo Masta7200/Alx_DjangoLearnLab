@@ -1,6 +1,9 @@
 from typing import List
+from urllib import response
 from rest_framework import generics, permissions, viewsets
-from .models import Post, Comment
+
+from social_media_api.notifications.models import Notification
+from .models import Like, Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -29,3 +32,33 @@ class FeedView(generics.ListAPIView):  # Correcting the inheritance here
     def get_queryset(self) -> List[Post]:
         following_users = self.request.user.following.all()
         return Post.objects.filter(author__in=following_users).order_by('-created_at')
+class LikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+
+        if created:
+            # Create a notification for the post author
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb='liked your post',
+                target_content_type=ContentType.objects.get_for_model(Post),
+                target_object_id=post.id
+            )
+            return response({"message": "Post liked."})
+        return response({"message": "You already liked this post."})
+
+class UnlikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)
+        try:
+            like = Like.objects.get(user=request.user, post=post)
+            like.delete()
+            return response({"message": "Post unliked."})
+        except Like.DoesNotExist:
+            return response({"message": "You have not liked this post."})
